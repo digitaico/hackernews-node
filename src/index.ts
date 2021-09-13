@@ -1,6 +1,6 @@
-const { ApolloServer } = require('apollo-server');
-const fs = require('fs');
-const path = require('path');
+import { ApolloServer } from 'apollo-server';
+import fs from 'fs';
+import path from 'path';
 
 const resolvers = {
   Query: {
@@ -8,7 +8,7 @@ const resolvers = {
     feed: () => links,
   },
   Mutation: {
-    post: (parent, args) => {
+    post: (parent: string, args: string[]) => {
     let idCount = links.length
       const link = {
         id: `link-${idCount++}`,
@@ -20,14 +20,6 @@ const resolvers = {
     }
   },
 }
-
-const server = new ApolloServer({
-  typeDefs: fs.readFileSync(
-    path.join(__dirname, 'schema.graphql'),
-    'utf8'
-  ),
-  resolvers,
-})
 
 let links = [
   {
@@ -42,8 +34,16 @@ let links = [
   }
 ]
 
+const server = new ApolloServer({
+  typeDefs: fs.readFileSync(
+    path.join(__dirname, 'schema.graphql'),
+    'utf8'
+  ),
+  resolvers,
+})
+
 server
   .listen()
-  .then(({ url }) => 
+  .then(({ url }) =>
     console.log(`Server is running on ${url}`)
   );
